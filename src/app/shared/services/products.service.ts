@@ -7,9 +7,6 @@ import { ProductPayload } from '../Interfaces/payload-product.interface';
   providedIn: 'root'
 })
 export class ProductsService {
-  open(arg0: string, arg1: string, arg2: { duration: number; horizontalPosition: string; verticalPosition: string; }) {
-    throw new Error('Method not implemented.');
-  }
 
   HttpClient = inject(HttpClient);
 
@@ -17,7 +14,15 @@ export class ProductsService {
    return this.HttpClient.get<Product[]>('/api/products')
   }
 
+  get(id: string) {
+    return this.HttpClient.get<Product>(`/api/products/${id}`)
+  }
+
   post(payload: ProductPayload) {
    return this.HttpClient.post('/api/products', payload)
+  }
+
+  put(id: string, payload: ProductPayload) {
+   return this.HttpClient.put(`/api/products/${id}`, payload)
   }
 }
