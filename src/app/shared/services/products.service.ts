@@ -7,6 +7,9 @@ import { ProductPayload } from '../Interfaces/payload-product.interface';
   providedIn: 'root'
 })
 export class ProductsService {
+  open(arg0: string, arg1: string, arg2: { duration: number; horizontalPosition: string; verticalPosition: string; }) {
+    throw new Error('Method not implemented.');
+  }
 
   HttpClient = inject(HttpClient);
 
