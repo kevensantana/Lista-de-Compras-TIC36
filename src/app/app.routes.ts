@@ -7,7 +7,13 @@ import { inject } from '@angular/core';
 export const routes: Routes = [
   {
     path: '',
-    component: ListComponent
+    resolve: {
+      products: () => {
+        const productsService = inject(ProductsService)
+        return productsService.getAll();
+      }
+    },
+    component: ListComponent,
   },
   {
     path: 'create-product',
