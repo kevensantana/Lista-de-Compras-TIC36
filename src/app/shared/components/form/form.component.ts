@@ -4,11 +4,11 @@ import { Product } from '../../Interfaces/product.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, CommonModule],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
@@ -24,15 +24,18 @@ export class FormComponent {
     this.form = new FormGroup({
       title: new FormControl<string>(this.product()?.title ?? '', {
         nonNullable: true,
-        validators: Validators.required
+        validators: [Validators.required, Validators.minLength(1)]
       
       }),
     });
   }
 
   onSubmit() {
-    const Product = this.form.value as Product;
-    this.done.emit(Product);
-
+    if (this.form.valid) { 
+      const product: Product = this.form.value as Product;
+      this.done.emit(product);
+    } else {
+      this.form.markAllAsTouched(); 
+    }
   }
 }

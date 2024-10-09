@@ -6,11 +6,12 @@ import { CardComponent } from './components/card/card.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { filter } from 'rxjs';
 import { ConfirmationDialogService } from '../../shared/services/confirmation-dialog.service';
+import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports:[CardComponent, RouterLink, MatButtonModule],
+  imports:[CardComponent, RouterLink, MatButtonModule, CommonModule],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
@@ -22,6 +23,14 @@ export class ListComponent {
 
   confirmationDialogService = inject(ConfirmationDialogService)
   
+  get produtosNaoComprados() {
+    return this.products().filter(product => !product.comp);
+  }
+  
+  get produtosComprados() {
+    return this.products().filter(product => product.comp);
+  }
+
   onEdit(product: Product){
     this.router.navigate(['/edit-product', product.id]);
   }
@@ -36,5 +45,15 @@ export class ListComponent {
           });
         });
     });
+  }
+
+  onToggle(product: Product) {
+    product.comp = !product.comp; 
+    this.products.set([...this.products()]); 
+  }
+
+
+  trackById(index: number, product: Product): string {
+    return product.id; 
   }
 }

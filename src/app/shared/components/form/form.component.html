@@ -1,12 +1,12 @@
-
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
   <div class="form-content-container">
-    <mat-form-field>
+    <mat-form-field appearance="fill">
       <mat-label>Informe o nome do item</mat-label>
-      <input type="text" matInput formControlName="title" placeholder="Titulo">
-      
+      <input type="text" matInput formControlName="title" placeholder="Título" />
+      <mat-error *ngIf="form.get('title')?.hasError('required')">O título é obrigatório.</mat-error>
+      <mat-error *ngIf="form.get('title')?.hasError('minlength')">O título deve ter pelo menos 1 caractere.</mat-error>
     </mat-form-field>
 
-  <button type="submit" mat-raised-button color="primary">Salvar</button>
-</div>
+    <button type="submit" mat-raised-button color="primary">Salvar</button>
+  </div>
 </form>

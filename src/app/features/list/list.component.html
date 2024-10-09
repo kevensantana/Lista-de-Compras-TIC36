@@ -1,10 +1,16 @@
-
-
 <div class="action-container">
   <a mat-raised-button color="primary"  [routerLink] = "['create-product']">Adicionar itens</a>
 </div>
 
-@for(product of products(); track product.id) {
-    <app-card [product]="product" (edit)="onEdit(product)" (delete)="onDelete(product)"></app-card>
-}
+<h2>Itens Não Comprados</h2>
+<div *ngIf="produtosNaoComprados.length === 0">
+  <p>Nenhum item na lista.</p>
+</div>
+<div *ngFor="let product of produtosNaoComprados; trackBy: trackById">
+  <app-card [product]="product" (edit)="onEdit(product)" (delete)="onDelete(product)"></app-card>
+</div>
 
+<h2>Itens Comprados</h2>
+<div *ngFor="let product of produtosComprados; trackBy: trackById">
+  <app-card [product]="product" (edit)="onEdit(product)" (delete)="onDelete(product)"></app-card>
+</div>
