@@ -1,0 +1,14 @@
+<nav>
+  <ul>
+    <li><a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Inicio</a></li>
+    <li><a routerLink="/listaCompras" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Lista de compras</a></li>
+    <li><a routerLink="/profile" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Perfil</a></li>
+  </ul>
+  
+  <div>
+     <button *ngIf="(isAuthenticated$ | async); else login" (click)="auth.logout()">Log out</button>
+    <ng-template #login>
+      <button (click)="auth.loginWithRedirect()">Log in</button>
+    </ng-template>
+  </div>
+</nav>

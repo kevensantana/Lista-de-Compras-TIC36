@@ -1,8 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { ProductsService } from '../../shared/services/products.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,10 +22,11 @@ export class EditComponent {
 
 
   onSubmit(product: Product) {
-    this.productsService.put(this.product.id, product).subscribe(() => {
+    // Mantenha as propriedades do produto original, exceto o que está sendo editado
+    const productWithUserId = { ...product, userId: this.product.userId, id: this.product.id }; // Adicionando id e userId
+    this.productsService.putProduct(this.product.id, productWithUserId).subscribe(() => {
       this.matSnackBar.open('Produto editado com sucesso', 'ok');
-
-      this.router.navigateByUrl('/')
+      this.router.navigateByUrl('/listaCompras');
     });
-  }
+  }  
 }

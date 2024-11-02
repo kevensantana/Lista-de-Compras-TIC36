@@ -1,7 +1,14 @@
 
+.container{
+  height: 100px;
+  width: 100%;
+  background-color: rgb(87, 0, 158);
+  display: block;
+}
 
 .title {
-  display: flex;
-  justify-content: center;
+  width: 100%;
+  color: white;
+  padding-top: 10px;
   text-align: center;
 }

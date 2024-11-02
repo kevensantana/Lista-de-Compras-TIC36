@@ -7,10 +7,18 @@
   <p>Nenhum item na lista.</p>
 </div>
 <div *ngFor="let product of produtosNaoComprados; trackBy: trackById">
-  <app-card [product]="product" (edit)="onEdit(product)" (delete)="onDelete(product)"></app-card>
+  <app-card [product]="product" (edit)="onEdit(product)" (delete)="onDelete(product)" (toggle)="onToggle(product)">
+    <button mat-button (click)="onToggle(product)">Marcar como Comprado</button>
+  </app-card>
 </div>
 
 <h2>Itens Comprados</h2>
-<div *ngFor="let product of produtosComprados; trackBy: trackById">
-  <app-card [product]="product" (edit)="onEdit(product)" (delete)="onDelete(product)"></app-card>
+<div *ngIf="produtosComprados.length === 0">
+  <p>Nenhum item na lista de comprados.</p>
 </div>
+<div *ngFor="let product of produtosComprados; trackBy: trackById">
+  <app-card [product]="product" (edit)="onEdit(product)" (delete)="onDelete(product)" (toggle)="onToggle(product)">
+    <button mat-button (click)="onToggle(product)">Desmarcar como Comprado</button>
+  </app-card>
+</div>
+

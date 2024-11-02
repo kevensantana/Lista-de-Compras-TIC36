@@ -1,28 +1,50 @@
 import { ProductsService } from './../../shared/services/products.service';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Product } from '../../shared/Interfaces/product.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { CardComponent } from './components/card/card.component';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { filter } from 'rxjs';
 import { ConfirmationDialogService } from '../../shared/services/confirmation-dialog.service';
 import { CommonModule } from '@angular/common'; 
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports:[CardComponent, RouterLink, MatButtonModule, CommonModule],
+  imports: [CardComponent, RouterLink, MatButtonModule, CommonModule],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrls: ['./list.component.scss'] 
 })
-export class ListComponent {
-  products =  signal<Product[]>(inject(ActivatedRoute).snapshot.data['products']);
+export class ListComponent implements OnInit {
+  // Define `products` como um sinal para gerenciamento reativo de dados
+  products = signal<Product[]>([]);
   
+  // Injeta dependências
+  auth = inject(AuthService);
   productsService = inject(ProductsService);
   router = inject(Router);
+  confirmationDialogService = inject(ConfirmationDialogService);
+  console: any;
 
-  confirmationDialogService = inject(ConfirmationDialogService)
-  
+  ngOnInit(): void {
+    // Subscrição para obter o perfil do usuário autenticado
+    this.auth.user$.subscribe(profile => {
+      const userId = profile?.sub;
+      if (userId) {
+        // Carrega apenas os produtos pertencentes ao usuário autenticado
+        this.productsService.getUserProducts(userId).subscribe({
+          next: (products) => {
+            this.products.set(products);
+          },
+          error: (error) => {
+            console.error('Erro ao carregar produtos:', error);
+          }
+        });
+      }
+    });
+  }
+
   get produtosNaoComprados() {
     return this.products().filter(product => !product.comp);
   }
@@ -31,28 +53,46 @@ export class ListComponent {
     return this.products().filter(product => product.comp);
   }
 
-  onEdit(product: Product){
+  onEdit(product: Product) {
     this.router.navigate(['/edit-product', product.id]);
   }
 
   onDelete(product: Product) {  
     this.confirmationDialogService.openDialog()
-    .pipe(filter((answer) => answer === true))
-    .subscribe(() => {
+      .pipe(filter((answer) => answer === true))
+      .subscribe(() => {
         this.productsService.delete(product.id).subscribe(() => { 
-          this.productsService.getAll().subscribe((products) => {
-            this.products.set(products);
-          });
+  
+          const updatedProducts = this.products().filter(p => p.id !== product.id);
+          this.products.set(updatedProducts);
         });
+      });
+  }
+
+  // Método para alternar o estado de compra do produto
+  onToggle(product: Product) {
+    const newCompStatus = product.comp; 
+    console.log(`Toggling product ID: ${product.id} to status: ${newCompStatus}`);
+
+    const updatedProduct: Product = { ...product, comp: newCompStatus };
+
+    this.productsService.toggleProductStatus(product.id, updatedProduct).subscribe({
+      next: (response) => {
+        // console.log('Produto atualizado:', response);
+      
+        const updatedProducts = this.products().map(p =>
+          // Preserva todos os atributos
+          p.id === product.id ? updatedProduct : p 
+        );
+        this.products.set(updatedProducts);
+      },
+      error: (error) => {
+        console.error('Erro ao atualizar o produto:', error);
+      }
     });
   }
 
-  onToggle(product: Product) {
-    product.comp = !product.comp; 
-    this.products.set([...this.products()]); 
-  }
-
-
+  // TrackBy para otimizar a renderização da lista
   trackById(index: number, product: Product): string {
     return product.id; 
   }

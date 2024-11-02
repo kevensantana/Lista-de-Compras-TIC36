@@ -1,37 +1,42 @@
-import { Component, computed, EventEmitter, Input, input, Output } from '@angular/core';
+// CardComponent
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Product } from '../../../../shared/Interfaces/product.interface';
 import { CommonModule } from '@angular/common'; 
+
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports:  [MatCardModule, MatButtonModule, CommonModule],
+  imports: [MatCardModule, MatButtonModule, CommonModule],
   templateUrl: './card.component.html',
-  styleUrl: './card.component.scss'
+  styleUrls: ['./card.component.scss']
 })
 export class CardComponent {
   
   @Input() product!: Product;
   
-  @Output() edit = new EventEmitter();
-  @Output() delete = new EventEmitter();
-  @Output() toggle = new EventEmitter()
+  @Output() edit = new EventEmitter<Product>();
+  @Output() delete = new EventEmitter<Product>();
+  @Output() toggle = new EventEmitter<Product>(); 
 
   productTitle(): string {
     return this.product.title;
   }
   
-  
   onEdit(){
-    this.edit.emit()
+    // Passa o produto para edição
+    this.edit.emit(this.product); 
   }
+
   onDelete() {
-    this.delete.emit();
+     // Passa o produto para deletar
+    this.delete.emit(this.product);
   }
 
   toggleComprado() {
-    this.product.comp = !this.product.comp;
-    this.toggle.emit();
+    // Inverte o estado de compra
+    this.product.comp = !this.product.comp; 
+    this.toggle.emit(this.product); 
   }
 }

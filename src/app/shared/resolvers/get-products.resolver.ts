@@ -3,6 +3,6 @@ import { ProductsService } from "../services/products.service";
 
 export const getProducts = () => {
   const productsService = inject(ProductsService)
-  return productsService.getAll();
+  return productsService.getAllProducts();
 };
 
