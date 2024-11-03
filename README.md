@@ -1,4 +1,4 @@
-<h1>Lista de compras - Residencia de software</h1>
+<h1>Lista de compras - TIC36</h1>
 
 <h2>Para rodar o sistema</h2>
 <p>Importante ter o Git, Nodejs, NPM e Angula</p>
